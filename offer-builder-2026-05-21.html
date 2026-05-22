@@ -1,0 +1,1923 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Herb · Solution Builder · 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1A1A1A;
+    --bg-elevated: #232323;
+    --bg-card: #2A2A2A;
+    --ink: #FFFFFF;
+    --ink-muted: #B3B3B3;
+    --ink-faint: #6E6E6E;
+    --accent: #C5F048;
+    --accent-dim: #8FB033;
+    --accent-ink: #1A1A1A;
+    --rule: #333333;
+    --ok: #6FCF97;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+  }
+  body { padding: 48px 64px 120px 64px; }
+
+  /* Chrome */
+  .top-tag {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .page-chip {
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 18px;
+    z-index: 50;
+  }
+  .logo-mark {
+    position: fixed;
+    bottom: 24px;
+    left: 32px;
+    width: 72px;
+    height: 88px;
+    background: var(--accent);
+    transform: rotate(-4deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    z-index: 50;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .logo-mark .word {
+    font-family: 'Inter', serif;
+    font-weight: 800;
+    font-style: italic;
+    font-size: 22px;
+    color: #0A2A1A;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .logo-mark .sub {
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #0A2A1A;
+    margin-top: 4px;
+  }
+
+  /* Hero */
+  .hero { margin-bottom: 48px; max-width: 900px; }
+  .hero h1 {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero p {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    max-width: 720px;
+  }
+
+  /* Layout */
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 32px;
+    align-items: start;
+  }
+
+  /* Sections */
+  .section { margin-bottom: 40px; }
+  .section-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  /* Solution cards */
+  .solution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .solution-grid-three {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .solution {
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+  }
+  .solution:hover { border-color: var(--accent-dim); }
+  .solution.selected {
+    border-color: var(--accent);
+    background: var(--bg-card);
+    box-shadow: 0 0 0 1px var(--accent) inset;
+  }
+  .solution-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .solution-name {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .solution-price {
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 600;
+    white-space: nowrap;
+    font-style: italic;
+  }
+  .solution-desc {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    margin-bottom: 16px;
+  }
+  .solution-features {
+    font-size: 12px;
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+  .solution-features li {
+    list-style: none;
+    padding-left: 16px;
+    position: relative;
+  }
+  .solution-features li::before {
+    content: '■';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 8px;
+    top: 4px;
+  }
+  .how-we-run {
+    margin-top: 16px;
+    padding: 12px 14px;
+    background: rgba(197, 240, 72, 0.06);
+    border-left: 2px solid var(--accent);
+    border-radius: 4px;
+  }
+  .how-we-run-title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .how-we-run-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .how-we-run-list li {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--ink-muted);
+    padding: 3px 0 3px 14px;
+    position: relative;
+  }
+  .how-we-run-list li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Unlock card (passive perks that activate by stacking) */
+  .unlock {
+    background: var(--bg-elevated);
+    border: 1px dashed var(--rule);
+    border-radius: 12px;
+    padding: 24px;
+    opacity: 0.55;
+    transition: all 0.25s ease;
+    cursor: default;
+  }
+  .unlock.unlocked {
+    opacity: 1;
+    border: 1px solid var(--accent);
+    background: rgba(197, 240, 72, 0.06);
+    box-shadow: 0 0 0 1px var(--accent) inset, 0 4px 24px rgba(197, 240, 72, 0.08);
+  }
+  .unlock-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .unlock-status {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    padding: 4px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+  }
+  .unlock.unlocked .unlock-status {
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .deal-pill {
+    display: none;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border-radius: 999px;
+    margin-top: 8px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    width: fit-content;
+  }
+  .deal-pill.shown { display: inline-block; }
+  .deal-pill.free { background: var(--ok); }
+  .solution-price.was {
+    text-decoration: line-through;
+    opacity: 0.5;
+    margin-right: 6px;
+  }
+  .solution-price-new {
+    color: var(--accent);
+    font-weight: 700;
+    font-style: italic;
+  }
+  .price-row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+
+  .solution.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    position: relative;
+  }
+  .solution.disabled::after {
+    content: attr(data-disabled-msg);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .solution.bonus-free {
+    border-color: var(--ok);
+    background: rgba(111, 207, 151, 0.05);
+  }
+  .solution.bonus-free .solution-price {
+    color: var(--ok);
+    text-decoration: line-through;
+    opacity: 0.6;
+  }
+  .free-badge {
+    background: var(--ok);
+    color: var(--accent-ink);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  /* Ad spend control */
+  .spend-control {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--rule);
+    display: none;
+  }
+  .solution.selected .spend-control { display: block; }
+  .spend-label {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .spend-label .val { color: var(--accent); font-weight: 600; }
+  .spend-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: var(--rule);
+    border-radius: 2px;
+    outline: none;
+  }
+  .spend-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  .spend-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+  .spend-input {
+    width: 100%;
+    margin-top: 8px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    color: var(--ink);
+    padding: 8px 10px;
+    font-family: inherit;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  .spend-input:focus {
+    border-color: var(--accent);
+  }
+  .spend-input::-webkit-inner-spin-button,
+  .spend-input::-webkit-outer-spin-button {
+    opacity: 1;
+    height: 24px;
+  }
+
+  /* Mail discount banner */
+  .mail-discount-banner {
+    display: none;
+    margin-top: 16px;
+    background: rgba(197, 240, 72, 0.1);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    align-items: center;
+    gap: 12px;
+  }
+  .mail-discount-banner.shown { display: flex; }
+  .mail-discount-tag {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent-ink);
+    background: var(--accent);
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .mail-discount-detail {
+    font-size: 13px;
+    color: var(--ink);
+  }
+  .mail-discount-detail strong { color: var(--accent); font-weight: 700; }
+
+  /* Herb Mail tier select */
+  .mail-tiers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .mail-tier {
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+  }
+  .mail-tier:hover { border-color: var(--accent-dim); }
+  .mail-tier.selected {
+    border-color: var(--accent);
+    background: var(--bg-card);
+  }
+  .mail-tier-num {
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+  }
+  .mail-tier-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    font-style: italic;
+    margin: 4px 0;
+  }
+  .mail-tier-was {
+    font-size: 11px;
+    color: var(--ink-faint);
+    text-decoration: line-through;
+    margin-bottom: 2px;
+    display: none;
+  }
+  .mail-tier.has-discount .mail-tier-was { display: block; }
+  .mail-tier-contacts {
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+
+  /* Summary panel */
+  .summary {
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    padding: 28px;
+    position: sticky;
+    top: 32px;
+  }
+  .summary-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+  .summary-total {
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .summary-total-unit {
+    font-size: 14px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+  .adspend-line {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 14px;
+    margin-bottom: 24px;
+    background: var(--bg);
+    border: 1px dashed var(--rule);
+    border-radius: 8px;
+  }
+  .adspend-label {
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .adspend-value {
+    font-size: 20px;
+    color: var(--ink-muted);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .adspend-note {
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+  .summary-breakdown {
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    margin-bottom: 20px;
+  }
+  .summary-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 14px;
+  }
+  .summary-line .name { color: var(--ink); }
+  .summary-line .val { color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+  .summary-line.savings { color: var(--ok); }
+  .summary-line.savings .name { color: var(--ok); }
+  .summary-line.savings .val { color: var(--ok); font-weight: 600; }
+  .summary-line.subtotal {
+    border-top: 1px solid var(--rule);
+    padding-top: 12px;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .summary-line.subtotal .name { color: var(--ink); }
+  .summary-line.subtotal .val { color: var(--ink); }
+
+  .ladder {
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    margin-bottom: 20px;
+  }
+  .ladder-title {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 12px;
+  }
+  .ladder-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+  .ladder-step.unlocked { color: var(--ink); }
+  .ladder-step.current {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .ladder-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--rule);
+    flex-shrink: 0;
+  }
+  .ladder-step.unlocked .ladder-dot { background: var(--accent); }
+  .ladder-step.current .ladder-dot {
+    background: var(--accent);
+    box-shadow: 0 0 0 4px rgba(197, 240, 72, 0.2);
+  }
+
+  .bonuses {
+    background: rgba(197, 240, 72, 0.08);
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .bonuses-title {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .bonus-item {
+    font-size: 13px;
+    color: var(--ink);
+    padding: 4px 0;
+    padding-left: 16px;
+    position: relative;
+  }
+  .bonus-item::before {
+    content: '+';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .bonuses.empty {
+    background: transparent;
+    border-color: var(--rule);
+  }
+  .bonuses.empty .bonuses-title { color: var(--ink-faint); }
+  .bonuses.empty .bonus-item { color: var(--ink-faint); }
+  .bonuses.empty .bonus-item::before { color: var(--ink-faint); }
+
+  .cta {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    width: 100%;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s ease;
+  }
+  .cta:hover { background: #B8E235; }
+  .cta-sub {
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-faint);
+    margin-top: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .modal-backdrop.shown { display: flex; }
+  .modal {
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    color: var(--ink-muted);
+    font-size: 28px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .modal-close:hover { background: var(--rule); color: var(--ink); }
+  .modal-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .modal-title {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .modal-sub {
+    font-size: 14px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin-bottom: 24px;
+  }
+  .form-row { margin-bottom: 16px; }
+  .form-label {
+    display: block;
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    color: var(--ink);
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input.invalid { border-color: var(--danger); }
+  .form-error {
+    color: var(--danger);
+    font-size: 12px;
+    margin-bottom: 12px;
+    min-height: 16px;
+  }
+  .redirect-spinner {
+    height: 4px;
+    background: var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 24px 0;
+  }
+  .spinner-bar {
+    height: 100%;
+    background: var(--accent);
+    width: 0;
+    animation: fill 2.2s linear forwards;
+  }
+  @keyframes fill {
+    0% { width: 0; }
+    100% { width: 100%; }
+  }
+
+  /* ============================================================
+     RESPONSIVE BREAKPOINTS
+     ============================================================ */
+
+  /* Prevent grid items from refusing to shrink below their content width */
+  .grid > * { min-width: 0; }
+
+  /* Larger desktop adjustment (under ~1480px), summary panel narrows */
+  @media (max-width: 1480px) {
+    .grid {
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+    .summary { padding: 24px; }
+    .summary-total { font-size: 48px; }
+    .solution-grid-three { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Standard laptop / 13" MacBook (under ~1366px): stack summary below */
+  @media (max-width: 1366px) {
+    body { padding: 32px 32px 100px 32px; }
+    .grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .summary {
+      position: static;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .hero h1 { font-size: 40px; }
+    .hero p { font-size: 16px; }
+  }
+
+  /* Tablet portrait / narrow window (under ~820px) */
+  @media (max-width: 820px) {
+    body { padding: 24px 20px 80px 20px; }
+    .solution-grid { grid-template-columns: 1fr; }
+    .solution-grid-three { grid-template-columns: 1fr; }
+    .mail-tiers { grid-template-columns: repeat(2, 1fr); }
+    .hero h1 { font-size: 32px; }
+    .summary-total { font-size: 40px; }
+    .section-label { font-size: 11px; }
+    .modal { padding: 28px 24px; }
+    .modal-title { font-size: 22px; }
+  }
+
+  /* Phone (under ~500px) */
+  @media (max-width: 500px) {
+    body { padding: 20px 16px 80px 16px; }
+    .hero { margin-bottom: 32px; }
+    .hero h1 { font-size: 28px; }
+    .mail-tiers { grid-template-columns: 1fr; }
+    .solution { padding: 20px; }
+    .summary { padding: 20px; }
+    .summary-total { font-size: 36px; }
+    .top-tag { font-size: 11px; }
+    .mail-discount-detail { font-size: 12px; }
+    .modal { padding: 24px 18px; max-height: 95vh; }
+    .modal-title { font-size: 20px; }
+    .form-input { padding: 10px 12px; font-size: 13px; }
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    font-size: 12px;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-tag">HERB AGENCY · CMAAS · SOLUTION BUILDER · 2026</div>
+
+<div class="hero">
+  <h1>Build the stack that fits your <span class="accent">growth goals.</span></h1>
+  <p>Pick the solutions you want. As you stack more, you unlock bonuses, free add-ons, and pricing breaks. Performance first. Ad-spend transparent. No impression caps.</p>
+</div>
+
+<div class="grid">
+  <div>
+
+    <!-- Acquisition -->
+    <div class="section">
+      <div class="section-label">Acquisition</div>
+      <div class="solution-grid">
+
+        <div class="solution" data-id="meta-full" data-mgmt="5999" data-has-spend="1" data-no-stack="1">
+          <div class="solution-head">
+            <div class="solution-name">Full Service Meta</div>
+            <div class="solution-price">$5,999/mo or 20% of spend</div>
+          </div>
+          <div class="solution-desc">End-to-end Meta media management. We handle creative, copy, design, media buying, and strategy.</div>
+          <ul class="solution-features">
+            <li>Creative support</li>
+            <li>Copywriter and designer</li>
+            <li>Media buyer and strategist</li>
+            <li>Herb Analytics reporting</li>
+            <li>Dedicated Customer Success Manager</li>
+            <li>20% of ad spend, whichever is greater</li>
+            <li>90 day term</li>
+          </ul>
+          <div class="spend-control">
+            <div class="spend-label">Monthly ad spend <span class="val" id="meta-full-val">$0</span></div>
+            <input type="range" class="spend-slider" id="meta-full-spend" min="0" max="100000" step="500" value="0">
+            <input type="number" class="spend-input" id="meta-full-input" min="0" step="500" value="0" placeholder="Enter spend">
+          </div>
+        </div>
+
+        <div class="solution" data-id="meta-hybrid" data-mgmt="4999" data-has-spend="1" data-no-stack="1">
+          <div class="solution-head">
+            <div class="solution-name">Hybrid Meta</div>
+            <div class="solution-price">$4,999/mo or 18% of spend</div>
+          </div>
+          <div class="solution-desc">Meta media buying and strategy. You handle creative, we run the account.</div>
+          <ul class="solution-features">
+            <li>Media buyer and strategist</li>
+            <li>Herb Analytics reporting</li>
+            <li>Dedicated Customer Success Manager</li>
+            <li>18% of ad spend, whichever is greater</li>
+            <li>90 day term</li>
+          </ul>
+          <div class="spend-control">
+            <div class="spend-label">Monthly ad spend <span class="val" id="meta-hybrid-val">$0</span></div>
+            <input type="range" class="spend-slider" id="meta-hybrid-spend" min="0" max="100000" step="500" value="0">
+            <input type="number" class="spend-input" id="meta-hybrid-input" min="0" step="500" value="0" placeholder="Enter spend">
+          </div>
+        </div>
+
+        <div class="solution" data-id="google-hybrid" data-mgmt="4999" data-has-spend="1" data-no-stack="1">
+          <div class="solution-head">
+            <div class="solution-name">Hybrid Google</div>
+            <div class="solution-price">$4,999/mo or 18% of spend</div>
+          </div>
+          <div class="solution-desc">Google Search campaign management. We handle keyword research, bidding, ad copy, and optimization against your target cost per acquisition.</div>
+          <ul class="solution-features">
+            <li>Google Search campaigns</li>
+            <li>Keyword research and bid strategy</li>
+            <li>Ad copy (headlines and descriptions)</li>
+            <li>Conversion and CPA optimization</li>
+            <li>Herb Analytics reporting</li>
+            <li>Dedicated Customer Success Manager</li>
+            <li>18% of ad spend, whichever is greater</li>
+            <li>90 day term</li>
+          </ul>
+          <div class="spend-control">
+            <div class="spend-label">Monthly ad spend <span class="val" id="google-hybrid-val">$0</span></div>
+            <input type="range" class="spend-slider" id="google-hybrid-spend" min="0" max="100000" step="500" value="0">
+            <input type="number" class="spend-input" id="google-hybrid-input" min="0" step="500" value="0" placeholder="Enter spend">
+          </div>
+        </div>
+
+        <div class="solution" data-id="google-full" data-mgmt="5999" data-has-spend="1" data-no-stack="1">
+          <div class="solution-head">
+            <div class="solution-name">Full Service Google</div>
+            <div class="solution-price">$5,999/mo or 20% of spend</div>
+          </div>
+          <div class="solution-desc">End-to-end Google management across Search, Shopping, and YouTube.</div>
+          <ul class="solution-features">
+            <li>Search, Shopping, and YouTube</li>
+            <li>Media buyer and strategist</li>
+            <li>Herb Analytics reporting</li>
+            <li>Dedicated Customer Success Manager</li>
+            <li>20% of ad spend, whichever is greater</li>
+            <li>90 day term</li>
+          </ul>
+          <div class="spend-control">
+            <div class="spend-label">Monthly ad spend <span class="val" id="google-full-val">$0</span></div>
+            <input type="range" class="spend-slider" id="google-full-spend" min="0" max="100000" step="500" value="0">
+            <input type="number" class="spend-input" id="google-full-input" min="0" step="500" value="0" placeholder="Enter spend">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Awareness -->
+    <div class="section">
+      <div class="section-label">Awareness</div>
+      <div class="solution-grid">
+
+        <div class="solution" data-id="meta" data-mgmt="2000" data-min-spend="0" data-has-spend="1">
+          <div class="solution-head">
+            <div class="solution-name">Herb Discovers <br>Co-Branded Meta Ads</div>
+            <div class="solution-price">Flat $1,999/mo up to $5K spend</div>
+          </div>
+          <div class="solution-desc">Co-branded Meta ads through our proprietary compliance ad account. We handle creative, media buying, strategy.</div>
+          <ul class="solution-features">
+            <li>Full creative production</li>
+            <li>Live dashboard access</li>
+            <li>1 dedicated SEO article (updated monthly)</li>
+            <li>Do-follow backlinks</li>
+            <li>$0 to $5K spend: flat $1,999/mo</li>
+            <li>$5K to $10K spend: 8% fee on the portion above $5K</li>
+            <li>$10K spend cap on this product</li>
+          </ul>
+          <div class="how-we-run">
+            <div class="how-we-run-title">How we run Herb Discovers</div>
+            <ul class="how-we-run-list">
+              <li>Lifestyle and culture creative, not product-first ads. This is the difference between scale and shutdown</li>
+              <li>Restricted language gets stripped from copy and imagery (we handle this)</li>
+              <li>Expect creative iteration as part of the process, compliance is ongoing</li>
+            </ul>
+          </div>
+          <div class="spend-control">
+            <div class="spend-label">Monthly ad spend <span class="val" id="meta-val">$0</span></div>
+            <input type="range" class="spend-slider" id="meta-spend" min="0" max="10000" step="500" value="0">
+            <input type="number" class="spend-input" id="meta-input" min="0" max="10000" step="500" value="0" placeholder="Enter spend">
+          </div>
+        </div>
+
+        <div class="solution" data-id="x" data-mgmt="999" data-min-spend="0" data-has-spend="1">
+          <div class="solution-head">
+            <div class="solution-name">X Co-Branded <br>Ads</div>
+            <div class="solution-price" data-price-display>Flat $999/mo up to $5K spend</div>
+          </div>
+          <div class="deal-pill" data-deal-pill>Deal unlocked</div>
+          <div class="solution-desc">Active X ad account for cannabis amplification. Discounted to $499 when stacked with Herb Discovers.</div>
+          <ul class="solution-features">
+            <li>Full creative production</li>
+            <li>Dashboard access</li>
+            <li>50% off flat fee when stacked with Herb Discovers</li>
+            <li>$0 to $5K spend: flat $999/mo</li>
+            <li>$5K to $10K spend: 8% fee on the portion above $5K</li>
+            <li>$10K spend cap on this product</li>
+          </ul>
+          <div class="spend-control">
+            <div class="spend-label">Monthly ad spend <span class="val" id="x-val">$0</span></div>
+            <input type="range" class="spend-slider" id="x-spend" min="0" max="10000" step="500" value="0">
+            <input type="number" class="spend-input" id="x-input" min="0" max="10000" step="500" value="0" placeholder="Enter spend">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Retention & Remarketing -->
+    <div class="section">
+      <div class="section-label">Retention & Remarketing</div>
+      <div class="solution-grid">
+
+        <div class="solution" data-id="programmatic" data-mgmt="1000" data-min-spend="0" data-has-spend="1">
+          <div class="solution-head">
+            <div class="solution-name">Programmatic <br>Display</div>
+            <div class="solution-price" data-price-display>$999/mo + 10% spend</div>
+          </div>
+          <div class="deal-pill" data-deal-pill>Deal unlocked</div>
+          <div class="solution-desc">Reach 40M+ known U.S. cannabis shoppers across CNN, FOX, NY Post, Weather.com, and mobile inventory. Built for win-back and remarketing.</div>
+          <ul class="solution-features">
+            <li>Full creative production</li>
+            <li>Live dashboard access</li>
+            <li>Discounted to $500 when stacked with Herb Discovers</li>
+          </ul>
+          <div class="spend-control">
+            <div class="spend-label">Monthly ad spend <span class="val" id="programmatic-val">$0</span></div>
+            <input type="range" class="spend-slider" id="programmatic-spend" min="0" max="50000" step="500" value="0">
+            <input type="number" class="spend-input" id="programmatic-input" min="0" step="500" value="0" placeholder="Enter spend">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Identity -->
+    <div class="section">
+      <div class="section-label">Identity (Herb Mail)</div>
+      <div class="solution" data-id="herbmail" data-mgmt="0" data-has-spend="0" style="cursor: default;">
+        <div class="solution-head">
+          <div class="solution-name">Herb Mail <br>Identity Resolution</div>
+          <div class="solution-price" id="mail-display-price">Select a tier</div>
+        </div>
+        <div class="solution-desc">Identify high-intent site visitors, match them to verified profiles, sync to your ESP.</div>
+        <div class="mail-discount-banner" data-mail-discount-banner>
+          <span class="mail-discount-tag">Stack discount active</span>
+          <span class="mail-discount-detail">Tiers 1–3: <strong>−$249/mo</strong> · Tiers 4–6: <strong>−$499/mo</strong></span>
+        </div>
+        <div class="mail-tiers">
+          <div class="mail-tier" data-tier="0" data-price="0">
+            <div class="mail-tier-num">NONE</div>
+            <div class="mail-tier-was">&nbsp;</div>
+            <div class="mail-tier-price" data-tier-price>$0</div>
+            <div class="mail-tier-contacts">No Herb Mail</div>
+          </div>
+          <div class="mail-tier" data-tier="1" data-price="749">
+            <div class="mail-tier-num">TIER 1</div>
+            <div class="mail-tier-was">$749</div>
+            <div class="mail-tier-price" data-tier-price>$749</div>
+            <div class="mail-tier-contacts">1,500 contacts</div>
+          </div>
+          <div class="mail-tier" data-tier="2" data-price="1499">
+            <div class="mail-tier-num">TIER 2</div>
+            <div class="mail-tier-was">$1,499</div>
+            <div class="mail-tier-price" data-tier-price>$1,499</div>
+            <div class="mail-tier-contacts">3,500 contacts</div>
+          </div>
+          <div class="mail-tier" data-tier="3" data-price="2249">
+            <div class="mail-tier-num">TIER 3</div>
+            <div class="mail-tier-was">$2,249</div>
+            <div class="mail-tier-price" data-tier-price>$2,249</div>
+            <div class="mail-tier-contacts">5,000 contacts</div>
+          </div>
+          <div class="mail-tier" data-tier="4" data-price="2999">
+            <div class="mail-tier-num">TIER 4</div>
+            <div class="mail-tier-was">$2,999</div>
+            <div class="mail-tier-price" data-tier-price>$2,999</div>
+            <div class="mail-tier-contacts">7,500 contacts</div>
+          </div>
+          <div class="mail-tier" data-tier="5" data-price="3499">
+            <div class="mail-tier-num">TIER 5</div>
+            <div class="mail-tier-was">$3,499</div>
+            <div class="mail-tier-price" data-tier-price>$3,499</div>
+            <div class="mail-tier-contacts">10,000 contacts</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Authority unlocks -->
+    <div class="section">
+      <div class="section-label">Authority (unlocks as you stack)</div>
+      <div class="solution-grid solution-grid-three">
+
+        <div class="unlock" data-unlock="brandpage" data-threshold="1">
+          <div class="unlock-head">
+            <div class="solution-name">Brand & Product Page on Herb.co</div>
+            <div class="unlock-status" data-status>Select 1 solution to unlock</div>
+          </div>
+          <div class="solution-desc">Dedicated brand page plus up to 12 product placements on Herb.co. SEO authority and high-intent traffic.</div>
+          <ul class="solution-features">
+            <li>Brand profile page</li>
+            <li>Up to 12 products listed</li>
+          </ul>
+        </div>
+
+        <div class="unlock" data-unlock="extra-article" data-threshold="3">
+          <div class="unlock-head">
+            <div class="solution-name">Extra Custom Article</div>
+            <div class="unlock-status" data-status>Stack 3 solutions to unlock</div>
+          </div>
+          <div class="solution-desc">A second SEO-optimized custom article with do-follow backlinks to your site. One-time, included in your stack.</div>
+          <ul class="solution-features">
+            <li>SEO optimized</li>
+            <li>Do-follow backlinks</li>
+          </ul>
+        </div>
+
+        <div class="unlock" data-unlock="article-inclusions" data-threshold="2">
+          <div class="unlock-head">
+            <div class="solution-name">Article Inclusions (month 1)</div>
+            <div class="unlock-status" data-status>Stack 2 solutions to unlock</div>
+          </div>
+          <div class="solution-desc" data-inclusion-desc>Get your brand and products featured inside existing high-ranking Herb.co articles. Scales as you stack.</div>
+          <ul class="solution-features">
+            <li data-inclusion-count>3 inclusions at 2 solutions</li>
+            <li>5 at 3 solutions, 8 at 4</li>
+            <li>12 at 4+ stack with Herb Mail Tier 4+</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Summary -->
+  <div class="summary">
+    <div class="summary-label">Your monthly total</div>
+    <div class="summary-total" id="total-display">$0</div>
+    <div class="summary-total-unit">per month, all-in (paid to Herb)</div>
+
+    <div class="adspend-line" id="adspend-line">
+      <span class="adspend-label">Your monthly ad spend</span>
+      <span class="adspend-value" id="adspend-total">$0</span>
+      <span class="adspend-note">paid directly to Meta, Google, etc. through Herb</span>
+    </div>
+
+    <div class="summary-breakdown" id="breakdown">
+      <div style="color: var(--ink-faint); font-size: 13px;">Select solutions to see your stack.</div>
+    </div>
+
+    <div class="bonuses empty" id="bonuses">
+      <div class="bonuses-title">Bonuses unlocked</div>
+      <div class="bonus-item">Stack 2+ solutions to start</div>
+    </div>
+
+    <div class="ladder">
+      <div class="ladder-title">Stacking ladder</div>
+      <div class="ladder-step" data-step="1"><div class="ladder-dot"></div><div>1: Brand & Product Page + Herb Mail discount</div></div>
+      <div class="ladder-step" data-step="2"><div class="ladder-dot"></div><div>2: 3 inclusions, dedicated CSM</div></div>
+      <div class="ladder-step" data-step="3"><div class="ladder-dot"></div><div>3: 5 inclusions, extra article unlocks</div></div>
+      <div class="ladder-step" data-step="4"><div class="ladder-dot"></div><div>4: 8 inclusions, 5% off mgmt fees</div></div>
+      <div class="ladder-step" data-step="5"><div class="ladder-dot"></div><div>5+: 10% off mgmt fees</div></div>
+      <div class="ladder-step" data-step="6"><div class="ladder-dot"></div><div>Mail Tier 4+ at stack 4+: 12 inclusions</div></div>
+    </div>
+
+    <button class="cta" id="open-lock-in" type="button">Lock in this stack</button>
+    <div class="cta-sub">90-day trial · month-to-month after</div>
+  </div>
+</div>
+
+<div class="footer">
+  HERB AGENCY · CMAAS · SOLUTION BUILDER 2026 · INTERNAL DRAFT
+</div>
+
+<!-- Lock-in Modal -->
+<div class="modal-backdrop" id="lock-in-modal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-labelledby="lock-in-title">
+    <button class="modal-close" id="lock-in-close" aria-label="Close">&times;</button>
+
+    <div class="modal-step" id="step-form">
+      <div class="modal-eyebrow">Lock in your stack</div>
+      <h2 id="lock-in-title" class="modal-title">A quick intro before we book.</h2>
+      <p class="modal-sub">Tell us who you are. We'll review your selection together and make sure it's the right fit for where you're trying to go.</p>
+
+      <form id="lock-in-form" novalidate>
+        <div class="form-row">
+          <label class="form-label" for="lf-name">Name</label>
+          <input class="form-input" type="text" id="lf-name" name="name" required autocomplete="name">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="lf-email">Email</label>
+          <input class="form-input" type="email" id="lf-email" name="email" required autocomplete="email">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="lf-company">Company</label>
+          <input class="form-input" type="text" id="lf-company" name="company" required autocomplete="organization">
+        </div>
+        <div class="form-row">
+          <label class="form-label" for="lf-phone">Phone</label>
+          <input class="form-input" type="tel" id="lf-phone" name="phone" required autocomplete="tel">
+        </div>
+        <div class="form-error" id="lf-error"></div>
+        <button class="cta" id="lf-submit" type="submit">Continue to booking</button>
+        <div class="cta-sub">90-day trial · month-to-month after</div>
+      </form>
+    </div>
+
+    <div class="modal-step" id="step-success" style="display: none;">
+      <div class="modal-eyebrow">Selection sent</div>
+      <h2 class="modal-title">You're all set.</h2>
+      <p class="modal-sub">Your selections just landed in Chris's inbox. Redirecting you to book the call now.</p>
+      <div class="redirect-spinner">
+        <div class="spinner-bar"></div>
+      </div>
+      <a class="cta" id="manual-redirect" href="https://meetings.hubspot.com/chris4511/strat-chris?uuid=85b97d65-a3b8-4b2e-9f66-3fd35b5a2e1a" target="_self">Open my calendar now</a>
+    </div>
+  </div>
+</div>
+
+<script>
+const state = {
+  solutions: {
+    meta: { selected: false, mgmt: 1999, spend: 0, hasSpend: true, name: 'Herb Discovers Meta Ads', countsForStack: true, pricingModel: 'tiered', tiers: [{ upTo: 5000, pct: 0 }, { upTo: 10000, pct: 0.08 }] },
+    programmatic: { selected: false, mgmt: 999, spend: 0, hasSpend: true, name: 'Programmatic Display', countsForStack: true, pricingModel: 'additive', spendPct: 0.10 },
+    x: { selected: false, mgmt: 999, spend: 0, hasSpend: true, name: 'X Co-Branded Ads', countsForStack: true, pricingModel: 'tiered', tiers: [{ upTo: 5000, pct: 0 }, { upTo: 10000, pct: 0.08 }] },
+    'meta-full': { selected: false, mgmt: 5999, spend: 0, hasSpend: true, name: 'Full Service Meta', countsForStack: false, pricingModel: 'greater', spendPct: 0.20 },
+    'meta-hybrid': { selected: false, mgmt: 4999, spend: 0, hasSpend: true, name: 'Hybrid Meta', countsForStack: false, pricingModel: 'greater', spendPct: 0.18 },
+    'google-hybrid': { selected: false, mgmt: 4999, spend: 0, hasSpend: true, name: 'Hybrid Google', countsForStack: false, pricingModel: 'greater', spendPct: 0.18 },
+    'google-full': { selected: false, mgmt: 5999, spend: 0, hasSpend: true, name: 'Full Service Google', countsForStack: false, pricingModel: 'greater', spendPct: 0.20 }
+  },
+  mailTier: 0,
+  mailPrice: 0
+};
+
+const mailContactsByTier = { 0: 0, 1: 1500, 2: 3500, 3: 5000, 4: 7500, 5: 10000 };
+const mailDiscountByTier = { 0: 0, 1: 249, 2: 249, 3: 249, 4: 499, 5: 499 };
+
+function mailDiscountActive() {
+  // Active when at least 1 stack-eligible solution (Meta, Programmatic, or X) is selected.
+  // New Meta/Google solutions do not trigger the Mail discount.
+  return Object.values(state.solutions).some(s => s.selected && s.countsForStack);
+}
+
+function mailDiscountFor(tier) {
+  if (!mailDiscountActive() || tier === 0) return 0;
+  return mailDiscountByTier[tier] || 0;
+}
+
+function tieredSpendFee(spend, tiers) {
+  // Marginal: fee accrues only on the portion of spend within each tier band.
+  let remaining = spend;
+  let fee = 0;
+  let prevCap = 0;
+  for (const t of tiers) {
+    const bandSize = t.upTo - prevCap;
+    const inBand = Math.max(0, Math.min(remaining, bandSize));
+    fee += inBand * t.pct;
+    remaining -= inBand;
+    prevCap = t.upTo;
+    if (remaining <= 0) break;
+  }
+  return fee;
+}
+
+function countSelected() {
+  // Only original solutions (Meta, Programmatic, X) + Herb Mail count for stacking unlocks.
+  let n = 0;
+  Object.values(state.solutions).forEach(s => { if (s.selected && s.countsForStack) n++; });
+  if (state.mailTier > 0) n++;
+  return n;
+}
+
+function calculate() {
+  let mgmtSubtotal = 0;
+  let spendSubtotal = 0;
+  const lines = [];
+
+  // Determine free solutions based on stack count
+  const stackCount = countSelected();
+  const brandpageUnlocked = stackCount >= 1;
+  const extraArticleUnlocked = stackCount >= 3;
+  const metaSelected = state.solutions.meta.selected;
+  const progSelected = state.solutions.programmatic.selected;
+  const xSelected = state.solutions.x.selected;
+  // No free auto-includes. Both Programmatic and X discount to $500 when Herb Discovers is selected.
+  const xFreeMgmt = false;
+  const progFreeMgmt = false;
+  const mailDiscountAmt = mailDiscountFor(state.mailTier);
+  const mailDiscountIsActive = mailDiscountActive();
+  const mgmtBreak = stackCount >= 5 ? 0.10 : (stackCount >= 4 ? 0.05 : 0);
+
+  // Build lines
+  Object.entries(state.solutions).forEach(([id, s]) => {
+    if (!s.selected) return;
+
+    let mgmt = s.mgmt;
+    let freeNote = '';
+
+    if (metaSelected && id === 'programmatic') { mgmt = 499; freeNote = ' (50% off with Herb Discovers)'; }
+    if (metaSelected && id === 'x') { mgmt = 499; freeNote = ' (50% off with Herb Discovers)'; }
+
+    if (s.hasSpend && s.pricingModel === 'tiered') {
+      const spendCost = tieredSpendFee(s.spend, s.tiers);
+      const cappedSpend = Math.min(s.spend, s.tiers[s.tiers.length - 1].upTo);
+      const overCap = s.spend > s.tiers[s.tiers.length - 1].upTo;
+      let detail;
+      if (s.spend <= 5000) {
+        detail = `Flat $${mgmt.toLocaleString()} (no spend fee under $5,000 ad spend)`;
+      } else {
+        const above = Math.min(s.spend, 10000) - 5000;
+        detail = `$${mgmt.toLocaleString()} mgmt + 8% on $${above.toLocaleString()} above the $5K threshold`;
+      }
+      lines.push({
+        name: s.name + freeNote,
+        val: `$${Math.round(mgmt + spendCost).toLocaleString()}/mo`,
+        detail: detail
+      });
+    } else if (s.hasSpend && s.pricingModel === 'additive') {
+      const spendCost = s.spend * s.spendPct;
+      lines.push({
+        name: s.name + freeNote,
+        val: `$${(mgmt + spendCost).toLocaleString()}/mo`,
+        detail: `$${mgmt.toLocaleString()} mgmt + $${spendCost.toLocaleString()} (${Math.round(s.spendPct * 100)}% of $${s.spend.toLocaleString()} spend)`
+      });
+    } else if (s.hasSpend && s.pricingModel === 'greater') {
+      const pctCost = s.spend * s.spendPct;
+      const billed = Math.max(mgmt, pctCost);
+      const driver = pctCost > mgmt ? `${Math.round(s.spendPct * 100)}% of $${s.spend.toLocaleString()} spend` : `$${mgmt.toLocaleString()} mgmt fee`;
+      lines.push({
+        name: s.name + freeNote,
+        val: `$${billed.toLocaleString()}/mo`,
+        detail: `Billed at ${driver} (higher of MF or ${Math.round(s.spendPct * 100)}% of $${s.spend.toLocaleString()})`
+      });
+    } else {
+      lines.push({
+        name: s.name + freeNote,
+        val: `$${mgmt.toLocaleString()}/mo`,
+        detail: null
+      });
+    }
+  });
+
+  // Herb Mail
+  if (state.mailTier > 0) {
+    const mailFinal = state.mailPrice - mailDiscountAmt;
+    mgmtSubtotal += mailFinal;
+    const discountNote = mailDiscountAmt > 0 ? ` (-$${mailDiscountAmt} stack discount)` : '';
+    lines.push({
+      name: `Herb Mail Tier ${state.mailTier}${discountNote}`,
+      val: `$${mailFinal.toLocaleString()}/mo`,
+      detail: `${mailContactsByTier[state.mailTier].toLocaleString()} contacts/mo`
+    });
+  }
+
+  // Mgmt break
+  let mgmtDiscount = 0;
+  if (mgmtBreak > 0) {
+    // Apply break only to non-zero mgmt fees and Herb Mail
+    mgmtDiscount = Math.round(mgmtSubtotal * mgmtBreak);
+  }
+
+  const adSpendCost = spendSubtotal * 0.10;
+  // Recalculate: mgmtSubtotal already includes the % of spend? No, lines added mgmt + spendCost into mgmtSubtotal incorrectly. Fix:
+  // Let me recompute cleanly.
+
+  // Clean recompute
+  let pureMgmt = 0;
+  let pureSpendFee = 0;
+  Object.entries(state.solutions).forEach(([id, s]) => {
+    if (!s.selected) return;
+    let mgmt = s.mgmt;
+    // Herb Discovers in stack discounts Programmatic and X to $500
+    if (metaSelected && id === 'programmatic') mgmt = 499;
+    if (metaSelected && id === 'x') mgmt = 499;
+
+    if (s.hasSpend && s.pricingModel === 'tiered') {
+      pureMgmt += mgmt;
+      pureSpendFee += tieredSpendFee(s.spend, s.tiers);
+    } else if (s.hasSpend && s.pricingModel === 'additive') {
+      pureMgmt += mgmt;
+      pureSpendFee += s.spend * s.spendPct;
+    } else if (s.hasSpend && s.pricingModel === 'greater') {
+      const pctCost = s.spend * s.spendPct;
+      pureMgmt += Math.max(mgmt, pctCost);
+    } else {
+      pureMgmt += mgmt;
+    }
+  });
+  // Herb Mail with flat tier discount
+  let mailLineFinal = 0;
+  if (state.mailTier > 0) {
+    mailLineFinal = state.mailPrice - mailDiscountAmt;
+    pureMgmt += mailLineFinal;
+  }
+
+  const breakAmount = mgmtBreak > 0 ? Math.round(pureMgmt * mgmtBreak) : 0;
+  const total = pureMgmt + pureSpendFee - breakAmount;
+
+  // Render summary
+  document.getElementById('total-display').textContent = '$' + Math.round(total).toLocaleString();
+
+  // Sum total ad spend across selected solutions
+  let totalAdSpend = 0;
+  Object.values(state.solutions).forEach(s => {
+    if (s.selected && s.hasSpend) totalAdSpend += (s.spend || 0);
+  });
+  document.getElementById('adspend-total').textContent = '$' + totalAdSpend.toLocaleString();
+
+  const breakdownEl = document.getElementById('breakdown');
+  if (lines.length === 0) {
+    breakdownEl.innerHTML = '<div style="color: var(--ink-faint); font-size: 13px;">Select solutions to see your stack.</div>';
+  } else {
+    let html = '';
+    lines.forEach(l => {
+      html += `<div class="summary-line"><span class="name">${l.name}</span><span class="val">${l.val}</span></div>`;
+      if (l.detail) html += `<div style="font-size: 11px; color: var(--ink-faint); margin-top: -4px; padding-bottom: 4px;">${l.detail}</div>`;
+    });
+    if (breakAmount > 0) {
+      html += `<div class="summary-line savings"><span class="name">Stacking break (${Math.round(mgmtBreak * 100)}%)</span><span class="val">−$${breakAmount.toLocaleString()}/mo</span></div>`;
+    }
+    html += `<div class="summary-line subtotal"><span class="name">Monthly total</span><span class="val">$${Math.round(total).toLocaleString()}</span></div>`;
+    breakdownEl.innerHTML = html;
+  }
+
+  // Render bonuses
+  const bonusesEl = document.getElementById('bonuses');
+  const bonuses = [];
+  const acquisitionSelected = state.solutions['meta-full'].selected || state.solutions['meta-hybrid'].selected || state.solutions['google-hybrid'].selected || state.solutions['google-full'].selected;
+  if (stackCount >= 1) bonuses.push('Brand & Product Page on Herb.co unlocked');
+  if (mailDiscountIsActive) bonuses.push('Herb Mail stack discount active (Tiers 1–3: −$249, Tiers 4–6: −$499)');
+  if (stackCount >= 2) bonuses.push('3 article inclusions in month 1');
+  if (stackCount >= 2 || acquisitionSelected) bonuses.push('Dedicated Customer Success Manager');
+  if (stackCount >= 3) bonuses.push('5 article inclusions in month 1');
+  if (stackCount >= 3) bonuses.push('Extra custom article unlocked');
+  if (stackCount >= 4) bonuses.push('8 article inclusions in month 1');
+  if (stackCount >= 4) bonuses.push('5% off combined management fees');
+  if (stackCount >= 4 && state.mailTier >= 4) bonuses.push('12 article inclusions in month 1');
+  if (stackCount >= 5) bonuses.push('10% off combined management fees');
+  if (metaSelected && (state.solutions.programmatic.selected || state.solutions.x.selected)) bonuses.push('Programmatic / X discounted to $500 with Herb Discovers');
+
+  // Deduplicate by keeping only the highest tier of each bonus type
+  const filtered = [];
+  const articleTiers = bonuses.filter(b => b.includes('article inclusions in month 1'));
+  if (articleTiers.length) filtered.push(articleTiers[articleTiers.length - 1]);
+  if (bonuses.includes('Brand & Product Page on Herb.co unlocked')) filtered.push('Brand & Product Page on Herb.co unlocked');
+  if (bonuses.find(b => b.startsWith('Herb Mail stack discount'))) filtered.push(bonuses.find(b => b.startsWith('Herb Mail stack discount')));
+  if (bonuses.includes('Extra custom article unlocked')) filtered.push('Extra custom article unlocked');
+  const breakTiers = bonuses.filter(b => b.includes('off combined management'));
+  if (breakTiers.length) filtered.push(breakTiers[breakTiers.length - 1]);
+  if (bonuses.includes('Dedicated Customer Success Manager')) filtered.push('Dedicated Customer Success Manager');
+  if (bonuses.includes('Programmatic / X discounted to $500 with Herb Discovers')) filtered.push('Programmatic / X discounted to $500 with Herb Discovers');
+
+  if (filtered.length === 0) {
+    bonusesEl.className = 'bonuses empty';
+    bonusesEl.innerHTML = `<div class="bonuses-title">Bonuses unlocked</div><div class="bonus-item">Stack 2+ solutions to start</div>`;
+  } else {
+    bonusesEl.className = 'bonuses';
+    let html = '<div class="bonuses-title">Bonuses unlocked</div>';
+    filtered.forEach(b => html += `<div class="bonus-item">${b}</div>`);
+    bonusesEl.innerHTML = html;
+  }
+
+  // Render ladder
+  const mailBonusActive = stackCount >= 4 && state.mailTier >= 4;
+  document.querySelectorAll('.ladder-step').forEach(step => {
+    const s = parseInt(step.dataset.step);
+    step.classList.remove('unlocked', 'current');
+    if (s === 6) {
+      if (mailBonusActive) step.classList.add('unlocked', 'current');
+      return;
+    }
+    if (stackCount > s) step.classList.add('unlocked');
+    if (stackCount === s || (s === 5 && stackCount >= 5)) step.classList.add('current');
+  });
+
+  // Update solution cards for free indicators and deal pills
+  document.querySelectorAll('.solution').forEach(el => {
+    const id = el.dataset.id;
+    el.classList.remove('bonus-free');
+    if (id === 'x' && xFreeMgmt && state.solutions.x.selected) el.classList.add('bonus-free');
+    if (id === 'programmatic' && progFreeMgmt && state.solutions.programmatic.selected) el.classList.add('bonus-free');
+  });
+
+  // Mutual exclusion for Meta and Google products
+  const exclusionPairs = [
+    { a: 'meta-full', b: 'meta-hybrid', aLabel: 'Full Service Meta', bLabel: 'Hybrid Meta' },
+    { a: 'google-full', b: 'google-hybrid', aLabel: 'Full Service Google', bLabel: 'Hybrid Google' }
+  ];
+  exclusionPairs.forEach(pair => {
+    const aEl = document.querySelector(`.solution[data-id="${pair.a}"]`);
+    const bEl = document.querySelector(`.solution[data-id="${pair.b}"]`);
+    if (!aEl || !bEl) return;
+    aEl.classList.remove('disabled');
+    bEl.classList.remove('disabled');
+    if (state.solutions[pair.a].selected) {
+      bEl.classList.add('disabled');
+      bEl.setAttribute('data-disabled-msg', `Not applicable, ${pair.aLabel} selected`);
+    } else if (state.solutions[pair.b].selected) {
+      aEl.classList.add('disabled');
+      aEl.setAttribute('data-disabled-msg', `Not applicable, ${pair.bLabel} selected`);
+    }
+  });
+
+  // Update Mail discount banner + per-tier visuals
+  const mailBanner = document.querySelector('[data-mail-discount-banner]');
+  if (mailDiscountIsActive) mailBanner.classList.add('shown');
+  else mailBanner.classList.remove('shown');
+  document.querySelectorAll('.mail-tier').forEach(tierEl => {
+    const t = parseInt(tierEl.dataset.tier);
+    const basePrice = parseInt(tierEl.dataset.price);
+    const priceEl = tierEl.querySelector('[data-tier-price]');
+    if (t === 0) {
+      tierEl.classList.remove('has-discount');
+      return;
+    }
+    const discount = mailDiscountIsActive ? (mailDiscountByTier[t] || 0) : 0;
+    if (discount > 0) {
+      tierEl.classList.add('has-discount');
+      priceEl.textContent = '$' + (basePrice - discount).toLocaleString();
+    } else {
+      tierEl.classList.remove('has-discount');
+      priceEl.textContent = '$' + basePrice.toLocaleString();
+    }
+  });
+  // Update Mail head price display if a tier is currently selected
+  if (state.mailTier > 0) {
+    const final = state.mailPrice - mailDiscountAmt;
+    document.getElementById('mail-display-price').textContent = '$' + final.toLocaleString() + '/mo';
+  }
+
+  // Update Programmatic card price + pill
+  const progCard = document.querySelector('.solution[data-id="programmatic"]');
+  const progPrice = progCard.querySelector('[data-price-display]');
+  const progPill = progCard.querySelector('[data-deal-pill]');
+  if (metaSelected) {
+    progPrice.innerHTML = '<span class="solution-price was">$999/mo</span><span class="solution-price-new">$499/mo + 10% spend</span>';
+    progPill.textContent = 'Deal unlocked: 50% off';
+    progPill.classList.add('shown');
+    progPill.classList.remove('free');
+  } else {
+    progPrice.textContent = '$999/mo + 10% spend';
+    progPill.classList.remove('shown', 'free');
+  }
+
+  // Update X card price + pill
+  const xCard = document.querySelector('.solution[data-id="x"]');
+  const xPrice = xCard.querySelector('[data-price-display]');
+  const xPill = xCard.querySelector('[data-deal-pill]');
+  if (metaSelected) {
+    xPrice.innerHTML = '<span class="solution-price was">Flat $999/mo</span><span class="solution-price-new">Flat $499/mo up to $5K spend</span>';
+    xPill.textContent = 'Deal unlocked: 50% off flat fee';
+    xPill.classList.add('shown');
+    xPill.classList.remove('free');
+  } else {
+    xPrice.textContent = 'Flat $999/mo up to $5K spend';
+    xPill.classList.remove('shown', 'free');
+  }
+
+  // Update unlock cards
+  document.querySelectorAll('.unlock').forEach(el => {
+    const threshold = parseInt(el.dataset.threshold);
+    const statusEl = el.querySelector('[data-status]');
+    const unlockId = el.dataset.unlock;
+
+    if (unlockId === 'article-inclusions') {
+      // Inclusions ladder: 3 at stack 2, 5 at 3, 8 at 4, 12 at stack 4+ with Mail Tier 4+
+      if (stackCount < 2) {
+        el.classList.remove('unlocked');
+        const needed = 2 - stackCount;
+        statusEl.textContent = `Stack ${needed} more to unlock`;
+        const countLi = el.querySelector('[data-inclusion-count]');
+        if (countLi) countLi.textContent = '3 inclusions at 2 solutions';
+        return;
+      }
+      let count = 3;
+      if (stackCount >= 4 && state.mailTier >= 4) count = 12;
+      else if (stackCount >= 4) count = 8;
+      else if (stackCount >= 3) count = 5;
+      el.classList.add('unlocked');
+      statusEl.textContent = `${count} unlocked`;
+      const countLi = el.querySelector('[data-inclusion-count]');
+      if (countLi) countLi.textContent = `${count} article inclusions in month 1`;
+      return;
+    }
+
+    // Standard unlock cards (Brand & Product Page, Extra Custom Article)
+    if (stackCount >= threshold) {
+      el.classList.add('unlocked');
+      statusEl.textContent = 'Unlocked';
+    } else {
+      el.classList.remove('unlocked');
+      const needed = threshold - stackCount;
+      statusEl.textContent = `Stack ${needed} more to unlock`;
+    }
+  });
+}
+
+// Bind solution clicks
+document.querySelectorAll('.solution[data-id]').forEach(el => {
+  const id = el.dataset.id;
+  if (id === 'herbmail') return; // herb mail handled separately
+  el.addEventListener('click', (e) => {
+    if (e.target.closest('.spend-control')) return; // don't toggle when adjusting spend
+    if (el.classList.contains('disabled')) return; // mutual exclusion block
+    state.solutions[id].selected = !state.solutions[id].selected;
+    el.classList.toggle('selected', state.solutions[id].selected);
+    syncAutoIncludes();
+    calculate();
+  });
+});
+
+function syncAutoIncludes() {
+  // No auto-includes. Both Programmatic and X are paid (discounted, not free) when stacked with Herb Discovers.
+}
+
+// Bind ad spend sliders + typeable inputs
+['meta', 'programmatic', 'x', 'meta-full', 'meta-hybrid', 'google-hybrid', 'google-full'].forEach(id => {
+  const slider = document.getElementById(id + '-spend');
+  const input = document.getElementById(id + '-input');
+  const val = document.getElementById(id + '-val');
+  const maxVal = parseInt(slider.max);
+
+  // Honor the input's max attribute if set (used for capped products like Herb Discovers).
+  const inputMax = input.max ? parseInt(input.max) : null;
+
+  // Live update while typing: use raw value, no snapping, no rewriting the input
+  function updateLive(raw) {
+    let v = parseInt(raw) || 0;
+    if (v < 0) v = 0;
+    state.solutions[id].spend = v;
+    val.textContent = '$' + v.toLocaleString();
+    slider.value = Math.min(v, maxVal);
+    calculate();
+  }
+
+  // On blur or Enter: snap to nearest $500, enforce cap if present, and rewrite the input
+  function snapAndCommit() {
+    let v = parseInt(input.value) || 0;
+    if (v < 0) v = 0;
+    if (inputMax !== null && v > inputMax) v = inputMax;
+    v = Math.round(v / 500) * 500;
+    state.solutions[id].spend = v;
+    val.textContent = '$' + v.toLocaleString();
+    slider.value = Math.min(v, maxVal);
+    input.value = v;
+    calculate();
+  }
+
+  // Slider drag: snap live since slider steps by 500 anyway
+  slider.addEventListener('input', () => {
+    const v = parseInt(slider.value) || 0;
+    state.solutions[id].spend = v;
+    val.textContent = '$' + v.toLocaleString();
+    input.value = v;
+    calculate();
+  });
+
+  // Input typing: update live without snapping
+  input.addEventListener('input', () => updateLive(input.value));
+  // Input commit: snap to 500
+  input.addEventListener('blur', snapAndCommit);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { input.blur(); }
+  });
+});
+
+// Bind Herb Mail tier clicks
+document.querySelectorAll('.mail-tier').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.mail-tier').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+    state.mailTier = parseInt(el.dataset.tier);
+    state.mailPrice = parseInt(el.dataset.price);
+    const display = document.getElementById('mail-display-price');
+    if (state.mailTier === 0) display.textContent = 'Select a tier';
+    calculate(); // calculate() will set the discounted head price
+  });
+});
+
+// Initial calc
+calculate();
+
+// =============================================================================
+// LOCK-IN MODAL: capture buyer info, post selections to Web3Forms, redirect.
+// =============================================================================
+
+// ⚠️  PASTE YOUR WEB3FORMS ACCESS KEY BELOW.
+// Get one in 60 seconds at https://web3forms.com (just enter chris@herb.co).
+const WEB3FORMS_ACCESS_KEY = '3b00f4d7-065e-4ace-9c8c-9c3a2ca79383';
+
+const CALENDAR_URL = 'https://meetings.hubspot.com/chris4511/strat-chris?uuid=85b97d65-a3b8-4b2e-9f66-3fd35b5a2e1a';
+
+const modal = document.getElementById('lock-in-modal');
+const stepForm = document.getElementById('step-form');
+const stepSuccess = document.getElementById('step-success');
+const lockInForm = document.getElementById('lock-in-form');
+const submitBtn = document.getElementById('lf-submit');
+const errorEl = document.getElementById('lf-error');
+
+function openModal() {
+  modal.classList.add('shown');
+  modal.setAttribute('aria-hidden', 'false');
+  stepForm.style.display = '';
+  stepSuccess.style.display = 'none';
+  errorEl.textContent = '';
+  setTimeout(() => document.getElementById('lf-name').focus(), 50);
+}
+function closeModal() {
+  modal.classList.remove('shown');
+  modal.setAttribute('aria-hidden', 'true');
+}
+
+document.getElementById('open-lock-in').addEventListener('click', openModal);
+document.getElementById('lock-in-close').addEventListener('click', closeModal);
+modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('shown')) closeModal(); });
+
+// Build a human-readable summary of the current configuration for the email body.
+function buildSummary() {
+  const stackCount = countSelected();
+  const metaSelected = state.solutions.meta.selected;
+  const xFreeMgmt = false;
+  const progFreeMgmt = false;
+  const mailDiscountAmt = mailDiscountFor(state.mailTier);
+
+  const lines = [];
+  lines.push('=== SOLUTION BUILDER SUBMISSION ===');
+  lines.push('');
+  lines.push('SELECTED SOLUTIONS:');
+
+  let pureMgmt = 0;
+  let pureSpendFee = 0;
+  let totalAdSpend = 0;
+
+  Object.entries(state.solutions).forEach(([id, s]) => {
+    if (!s.selected) return;
+    let mgmt = s.mgmt;
+    let note = '';
+    if (metaSelected && id === 'programmatic') { mgmt = 499; note = ' (50% off w/ Herb Discovers)'; }
+    if (metaSelected && id === 'x') { mgmt = 499; note = ' (50% off w/ Herb Discovers)'; }
+
+    if (s.hasSpend && s.pricingModel === 'tiered') {
+      const fee = tieredSpendFee(s.spend, s.tiers);
+      pureMgmt += mgmt;
+      pureSpendFee += fee;
+      totalAdSpend += s.spend;
+      lines.push(`  • ${s.name}${note}`);
+      lines.push(`      Flat fee: $${mgmt.toLocaleString()}/mo`);
+      lines.push(`      Ad spend: $${s.spend.toLocaleString()}/mo (8% over $5K applies)`);
+      lines.push(`      Tier fee: $${Math.round(fee).toLocaleString()}/mo`);
+      lines.push(`      Subtotal: $${Math.round(mgmt + fee).toLocaleString()}/mo`);
+    } else if (s.hasSpend && s.pricingModel === 'additive') {
+      const fee = s.spend * s.spendPct;
+      pureMgmt += mgmt;
+      pureSpendFee += fee;
+      totalAdSpend += s.spend;
+      lines.push(`  • ${s.name}${note}`);
+      lines.push(`      Flat fee: $${mgmt.toLocaleString()}/mo`);
+      lines.push(`      Ad spend: $${s.spend.toLocaleString()}/mo (${Math.round(s.spendPct * 100)}% mgmt)`);
+      lines.push(`      Spend fee: $${Math.round(fee).toLocaleString()}/mo`);
+      lines.push(`      Subtotal: $${Math.round(mgmt + fee).toLocaleString()}/mo`);
+    } else if (s.hasSpend && s.pricingModel === 'greater') {
+      const pctCost = s.spend * s.spendPct;
+      const billed = Math.max(mgmt, pctCost);
+      pureMgmt += billed;
+      totalAdSpend += s.spend;
+      const driver = pctCost > mgmt ? `${Math.round(s.spendPct * 100)}% of $${s.spend.toLocaleString()} spend` : `$${mgmt.toLocaleString()} flat`;
+      lines.push(`  • ${s.name}${note}`);
+      lines.push(`      Pricing: $${mgmt.toLocaleString()}/mo OR ${Math.round(s.spendPct * 100)}% of spend, whichever is greater`);
+      lines.push(`      Ad spend: $${s.spend.toLocaleString()}/mo`);
+      lines.push(`      Billed at: $${Math.round(billed).toLocaleString()} (${driver})`);
+    } else {
+      pureMgmt += mgmt;
+      lines.push(`  • ${s.name}${note}: $${mgmt.toLocaleString()}/mo`);
+    }
+    lines.push('');
+  });
+
+  // Herb Mail
+  if (state.mailTier > 0) {
+    const mailFinal = state.mailPrice - mailDiscountAmt;
+    pureMgmt += mailFinal;
+    lines.push(`  • Herb Mail Tier ${state.mailTier}`);
+    lines.push(`      Base price: $${state.mailPrice.toLocaleString()}/mo`);
+    if (mailDiscountAmt > 0) lines.push(`      Stack discount: -$${mailDiscountAmt}/mo`);
+    lines.push(`      Billed: $${mailFinal.toLocaleString()}/mo (${mailContactsByTier[state.mailTier].toLocaleString()} contacts)`);
+    lines.push('');
+  }
+
+  if (Object.values(state.solutions).every(s => !s.selected) && state.mailTier === 0) {
+    lines.push('  (No solutions selected at submission)');
+    lines.push('');
+  }
+
+  const total = pureMgmt + pureSpendFee;
+  lines.push('---');
+  lines.push(`MONTHLY TOTAL TO HERB: $${Math.round(total).toLocaleString()}`);
+  lines.push(`MONTHLY AD SPEND (paid through Herb): $${totalAdSpend.toLocaleString()}`);
+  lines.push(`STACK SIZE: ${stackCount} solution(s)`);
+  lines.push('');
+
+  // Unlocks
+  const unlocks = [];
+  const acquisitionSelectedEmail = state.solutions['meta-full'].selected || state.solutions['meta-hybrid'].selected || state.solutions['google-hybrid'].selected || state.solutions['google-full'].selected;
+  if (stackCount >= 1) unlocks.push('Brand & Product Page on Herb.co');
+  if (mailDiscountActive()) unlocks.push('Herb Mail stack discount');
+  if (stackCount >= 2) unlocks.push('3 article inclusions in month 1');
+  if (stackCount >= 2 || acquisitionSelectedEmail) unlocks.push('Dedicated Customer Success Manager');
+  if (stackCount >= 3) unlocks.push('5 article inclusions in month 1');
+  if (stackCount >= 3) unlocks.push('Extra custom article');
+  if (stackCount >= 4) unlocks.push('8 article inclusions in month 1');
+  if (stackCount >= 4) unlocks.push('5% off combined management fees');
+  if (stackCount >= 4 && state.mailTier >= 4) unlocks.push('12 article inclusions in month 1');
+  if (stackCount >= 5) unlocks.push('10% off combined management fees');
+  if (unlocks.length) {
+    lines.push('UNLOCKS:');
+    unlocks.forEach(u => lines.push(`  + ${u}`));
+    lines.push('');
+  }
+
+  lines.push('---');
+  lines.push(`Submitted: ${new Date().toLocaleString()}`);
+  lines.push(`Source: Herb Solution Builder`);
+  return lines.join('\n');
+}
+
+// Form submit handler
+lockInForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  errorEl.textContent = '';
+
+  const name = document.getElementById('lf-name').value.trim();
+  const email = document.getElementById('lf-email').value.trim();
+  const company = document.getElementById('lf-company').value.trim();
+  const phone = document.getElementById('lf-phone').value.trim();
+
+  // Basic validation
+  const required = [['lf-name', name], ['lf-email', email], ['lf-company', company], ['lf-phone', phone]];
+  let firstInvalid = null;
+  required.forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (!val) {
+      el.classList.add('invalid');
+      if (!firstInvalid) firstInvalid = el;
+    } else {
+      el.classList.remove('invalid');
+    }
+  });
+  if (firstInvalid) {
+    errorEl.textContent = 'Please fill in all fields.';
+    firstInvalid.focus();
+    return;
+  }
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    document.getElementById('lf-email').classList.add('invalid');
+    errorEl.textContent = 'That email doesn\'t look right.';
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+
+  const summary = buildSummary();
+  const subject = `🟢 New Solution Builder submission: ${name} (${company})`;
+
+  const formData = new FormData();
+  formData.append('access_key', WEB3FORMS_ACCESS_KEY);
+  formData.append('subject', subject);
+  formData.append('from_name', 'Herb Solution Builder');
+  formData.append('Name', name);
+  formData.append('Email', email);
+  formData.append('Company', company);
+  formData.append('Phone', phone);
+  formData.append('Selections', summary);
+  // Hidden honeypot to deter bots
+  formData.append('botcheck', '');
+
+  try {
+    if (WEB3FORMS_ACCESS_KEY && WEB3FORMS_ACCESS_KEY !== 'YOUR_ACCESS_KEY_HERE') {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      if (!res.ok) throw new Error('Submit failed');
+    } else {
+      // Dev mode: log to console so we can verify the payload before pasting the key
+      console.warn('Web3Forms access key not set. Payload would have been:');
+      console.log({ name, email, company, phone, summary });
+    }
+    // Show success and start the redirect countdown
+    stepForm.style.display = 'none';
+    stepSuccess.style.display = '';
+    setTimeout(() => { window.location.href = CALENDAR_URL; }, 2200);
+  } catch (err) {
+    console.error(err);
+    errorEl.textContent = 'Something glitched on our end. Click below to book the call now and we\'ll catch up on the details there.';
+    // Even on failure, let the buyer continue
+    stepForm.style.display = 'none';
+    stepSuccess.style.display = '';
+    setTimeout(() => { window.location.href = CALENDAR_URL; }, 2200);
+  }
+});
+</script>
+
+</body>
+</html>
